@@ -1,16 +1,20 @@
 #!/user/bin/env python
 
 import socket
+import os
 
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-serverSocket.bind(("0.0.0.0", 8000))
+serverSocket.bind(("0.0.0.0", 8001))
 serverSocket.listen(5)
 
 while True:
 	(incomingSocket, address) = serverSocket.accept()
 	print "We got a connection from %s" % (str(address))
+	if os.fork() != 0:
+		continue
+
 	clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	#socket.AF_INET indicates that we want an IPv4 socket
 	#socket.SOCK_STREAM indicates that we want a TCP socket
